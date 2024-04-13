@@ -1,0 +1,65 @@
+#TD5
+
+#Exercice 1
+#J’etudie la mesure dans laquelle les individus aiment la musique folk. 
+#Pour cela, je selectionne 30 participants a qui je demande le niveau d’appreciation de la musique folk 
+#(echelle de -3 à 25, plus le score est haut, plus le participant apprecie la musique folk) et leur age 
+#(entre 15 et 85 ans). 
+#Importer, et nommer, le fichier de donnees disponible sur Moodle (data_folk)
+folk <- read.table(file.choose(), header=T, sep=";", dec=",")
+
+#Tester l'hypothese suivante et interpreter le resultat: Plus les participants sont ages, plus ils apprecient la musique folk. 
+cor.test(folk$appreciation, folk$age)
+#Il existe une relation positive significative, d'intensite moyenne, entre l'age des participants et leur score d'appreciation de la musique folk (r=.58, p<.001).
+
+#Creer un nuage de points representant le score d'appreciation en fonction de l'age 
+#(variable age en abscisses et la variable appreciation en ordonnees).
+#Ajouter un titre au graphique
+#Renommer les axes du graphique
+#Ajuster les limites des axes (-3 à 25 pour l'appreciation ; 15 à 85 pour l'age)
+graph_nuage1 <- plot(folk$age, folk$appreciation, main= "Score d'appreciation en fonction \n de l'age.", ylab= "Appreciation", xlab= "Age", ylim= c(-3, 25), xlim= c(15,85))
+##!!d'abord la variable en abscisses, puis celle en ordonnees lorsqu'on utilise la virgule
+
+#Calculer les coefficients de la droite de regression lineaire (a et b)
+a1 <- cov(folk$appreciation, folk$age)/var(folk$age)
+b1 <- mean(folk$appreciation)-a1*mean(folk$age)
+
+#Verifier les resultats avec une fonction permettant de trouver les parametres a et b
+lm(folk$appreciation~folk$age)
+##!!variable en ordonnees **en fonction (~)** de la variable en abcisses
+
+#Ajouter la droite de regression lineaire sur le nuage de points
+droite1 <- lm(folk$appreciation~folk$age)
+graph_nuage1+abline(droite1)
+
+#Exercice 2
+#J’etudie la relation entre la population de cigognes et le nombre de bebes dans les villes de Savoie. 
+#Pour cela, je vais recenser dans 15 villes de Savoie le nombre de cigognes nichant sur la commune ainsi 
+#que le nombre de bebes declares dans l’annee ecoulee.
+
+#Importer, et nommer, le fichier de donnees disponible sur Moodle (data_savoie)
+savoie <- read.table(file.choose(), header=T, sep=";", dec=",")
+
+#Faire les memes etapes qu'a l'exercice 1 (test de correlation, graphique, coefficients de la droite)
+#pour tester l'hypothese suivante: Plus il y a de cigognes sur la commune, plus il y a de bebes.
+cor.test(savoie$cigognes, savoie$bebes)
+#On observe une relation positive d'intensite faible entre le nombre de cigognes et le nombre de bebes dans les villes de Haute-Savoie. Cette relation n'est pas significative (r=.26, p=.340).
+graph_nuage2 <- plot(savoie$cigognes, savoie$bebes, main= "Nombre de bebes en fonction \n du nombre de cigognes.", ylab= "Nombre de bebes", xlab= "Nombre de cigognes", ylim= c(0,30), xlim= c(40,150))
+a2 <- cov(savoie$bebes, savoie$cigognes)/var(savoie$cigognes)
+b2 <- mean(savoie$bebes)-a2*mean(savoie$cigognes)
+droite2 <- lm(savoie$bebes~savoie$cigognes)
+graph_nuage2+abline(droite2)
+
+#Exercice 3
+#Refaire les graphiques des exercices 1 et 2 en :
+#Changeant la couleur des points
+#Changeant le style des points
+#Changeant la taille des points
+#Changeant la couleur du titre
+#Changeant la taille du titre
+#Changeant la couleur de la droite
+graph_nuage1 <- plot(folk$age, folk$appreciation, main= "Score d'appreciation en fonction \n de l'age.", ylab= "Appreciation", xlab= "Age", ylim= c(-3, 25), xlim= c(15,80), col="chartreuse4", pch=18, cex=1.5, col.main= "aquamarine2", cex.main= 0.85)
+graph_nuage1+abline(droite1, col="red")
+
+graph_nuage2 <- plot(savoie$cigognes, savoie$bebes, main= "Nombre de bebes en fonction \n du nombre de cigognes.", ylab= "Nombre de bebes", xlab= "Nombre de cigognes", ylim= c(0,30), xlim= c(40,150), col="brown3", pch=19, cex=1.5, col.main= "burlywood3", cex.main= 0.85)
+graph_nuage2+abline(droite2, col="darkgreen")

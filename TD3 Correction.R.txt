@@ -1,0 +1,87 @@
+#TD3
+
+#Creer et nommer les vecteurs suivants:
+#13,10,2,16,8,14,5,6,17,13
+#45,40,8,48,24,30,9,11,28,22
+#paris,chambery,lyon,marseille,dunkerque,lille,ambert,annecy,bordeaux,nantes
+vecteurF <- c(13,10,2,16,8,14,5,6,17,13)
+vecteurG <- c(45,40,8,48,24,30,9,11,28,22)
+vecteurH <- c("paris","chambery","lyon","marseille","dunkerque","lille","ambert","annecy","bordeaux","nantes")
+
+#A partir du premier vecteur, creer et nommer une matrice contenant 2 colonnes et 5 lignes
+matriceA <- matrix(vecteurF, ncol=2, nrow=5)
+matriceA
+
+#Dans cette matrice, quelle est la valeur de l'element de la ligne 4 de la colonne 2?
+matriceA[4,2]
+
+#Creer un dataframe contenant les trois vecteurs
+dataframeA <- data.frame(vecteurF, vecteurG, vecteurH)
+dataframeA
+
+#Dans ce dataframe, quelle est la valeur de l'element de la ligne 6 de la colonne 1?
+dataframeA[6,1]
+
+#Renommer les colonnes du dataframe avec les noms suivants : temps, score, ville
+colnames(dataframeA) <- c("temps","score","ville")
+dataframeA
+
+#Quelle est la valeur de l'element de la ligne 9 de la colonne ville?
+dataframeA[9,3] #solution1
+dataframeA[9,"ville"] #solution2
+
+#Extraire les elements de la colonne 2 du dataframe
+dataframeA[,2] #solution1
+dataframeA[c(1:10),2] #solution2
+dataframeA[,"score"] #solution3
+
+#Extraire les elements de la ligne 8 du dataframe
+dataframeA[8,] #solution1
+dataframeA[8,c("temps","score","ville")] #solution2
+
+#Calculer la moyenne de la colonne temps
+mean(dataframeA[,1]) #solution1
+mean(dataframeA[,"temps"]) #solution2
+mean(dataframeA$temps) #solution3
+mean(dataframeA[["temps"]]) #solution4
+
+#Calculer la moyenne de la colonne score sur les lignes 1, 3, 5, 7 et 9
+mean(dataframeA[c(1,3,5,7,9), 2])
+
+#Ajouter, et nommer, une colonne dans le dataframe correspondant au vecteur suivant : chiffres de 1 à 10
+dataframeA <- cbind(dataframeA, sujet=1:10)#solution1
+dataframeA$sujet2 <- 1:10 #solution2
+
+#Ajouter, et nommer, une colonne dans le dataframe correspondant au produit des deux premieres colonnes
+dataframeA$produit <- dataframeA$temps*dataframeA$score #solution1
+dataframeA[,"produit2"] <- dataframeA[,1]*dataframeA[,2] #solution2
+dataframeA <- cbind(dataframeA,produit3=vecteurF*vecteurG) #solution3
+
+#Dupliquer la colonne ville en lui donnant le nom "ville2"
+dataframeA$ville2 <- dataframeA$ville #solution1
+dataframeA[,"ville2bis"] <- dataframeA[,3] #solution2
+
+#Importer, et nommer, le fichier de donnees disponible sur Moodle (data_TD3)
+dataframeB <- read.table(file.choose(), header=T, sep=";", dec=",")
+
+#Trouver les statistiques descriptives (moyenne, mediane, valeur minimale, valeur maximale, 1 et 3 eme quartile) de chaque variable de ce nouveau dataframe
+summary(dataframeB)
+
+#Trouver les statistiques descriptives des colonnes 2, 3, 4 et 5 du dataframe
+summary(dataframeB[,c(2, 3, 4, 5)])
+
+#Quelle est la moyenne entre le score et l'appreciation du sujet 7?
+mean(c(dataframeB[7,4], dataframeB[7,5])) #solution1
+mean(c(dataframeB$Score[[7]], dataframeB$Appreciation[[7]])) #solution2
+
+#Calculer l'effectif d'hommes et de femmes
+table(dataframeB$Genre)
+
+#Transformer la colonne Sujet en un vecteur de caractères (c'est-à-dire en information de type texte, données qualitatives)
+dataframeB$Sujet <- as.character(dataframeB$Sujet)
+str(dataframeB)
+
+#Ajouter, et nommer, une nouvelle colonne qui contient la valeur 1 si le sujet est une femme, et la valeur 2 si le sujet est un homme
+dataframeB$Genre2 <- ifelse(dataframeB$Genre=="Femme",1,2)
+
+

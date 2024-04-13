@@ -1,0 +1,101 @@
+#TD4
+
+#Creer et nommer les vecteurs suivants:
+#13,10,2,16,8,14,5,6,17,13
+#45,40,8,48,24,30,9,11,28,22
+vecteurF <- c(13,10,2,16,8,14,5,6,17,13)
+vecteurG <- c(45,40,8,48,24,30,9,11,28,22)
+
+#Rassembler les vecteurs dans un dataframe (en nommant le dataframe)
+dataframeC <- data.frame(vecteurF, vecteurG)
+
+#Renommer les colonnes du dataframes "VD1" et "VD2"
+colnames(dataframeC) <- c("VD1", "VD2")
+
+#Calculer les statistiques descriptives de la VD1 et de la VD2
+summary(dataframeC)
+
+#Calculer la variance de la VD1 et de la VD2 (avec la fonction, puis sans en decomposant la formule [voir les formules sur Moodle])
+var(dataframeC$VD1)#solution1
+var(dataframeC$VD2)
+
+#solution2 : decomposer la formule en plusieurs étapes
+#calculer et nommer la moyenne de la VD1
+moy1 <- mean(dataframeC$VD1)
+#calculer les ecarts a la moyenne
+ecartmoy <- dataframeC$VD1-moy1
+#mettre les ecarts a la moyenne au carre
+ecartmoycarre <- ecartmoy^2
+#additionner les carres des ecarts a la moyenne
+sommecarreecartmoy <- sum(ecartmoycarre)
+#diviser la somme des carres des ecarts a la moyenne par N-1
+var1 <- sommecarreecartmoy/(length(dataframeC$VD1)-1)
+
+#solution3 : decomposer en une seule ligne
+sum((dataframeC$VD1-mean(dataframeC$VD1))^2)/(length(dataframeC$VD1)-1)
+#verifier que le resultat est le meme avec et sans la fonction
+
+#Calculer l'écart-type de la VD1 et de la VD2 (avec la fonction, puis sans en décomposant la formule)
+sd(dataframeC$VD1)#solution1
+sd(dataframeC$VD2)
+#solution2: decomposer en plusieurs etapes
+#faire la racine de la somme des carres des ecarts a la moyenne divises par N-1 (autrement dit la racine de la variance)
+sqrt(var1)
+#verifier que le resultat est le meme avec et sans la fonction
+
+#Calculer la covariance entre la VD1 et la VD2 (avec la fonction, puis sans en décomposant la formule)
+cov(dataframeC$VD1, dataframeC$VD2)#solution1
+
+#solution2: decomposer en plusieurs etapes
+#calculer les ecarts a la moyenne pour les deux VD (on le fait juste pour la VD2 puisque cela a ete fait plus haut pour la VD1)
+moy2 <- mean(dataframeC$VD2)
+ecartmoy2 <- dataframeC$VD2-moy2
+#faire le produits des ecarts a la moyenne
+produitecartmoy <- ecartmoy*ecartmoy2
+#faire la somme des produits
+sommeproduit <- sum(produitecartmoy)
+#diviser la somme des produits par N-1
+cov <- sommeproduit/(length(dataframeC$VD1)-1)
+
+#solution3: decomposer en une seule ligne
+sum((dataframeC$VD1-mean(dataframeC$VD1))*(dataframeC$VD2-mean(dataframeC$VD2)))/(length(dataframeC$VD1)-1)
+#verifier que le resultat est le meme avec et sans la fonction
+
+#Calculer la correlation de Pearson entre la VD1 et la VD2 (avec la fonction, puis sans en décomposant la formule)
+cor(dataframeC$VD1,dataframeC$VD2)#solution1
+cor <- cov/(sd(dataframeC$VD1)*sd(dataframeC$VD2))#solution2
+
+#Interpreter le resultat de la correlation
+#La correlation entre la VD1 et la VD2 est forte et positive : plus le score sur la VD1 augmente, plus le score sur la VD2 est élevé (r=.76).
+
+#Cette correlation est-elle significative?
+cor.test(dataframeC$VD1,dataframeC$VD2)
+#La VD1 et la VD2 correlent significativement (r=.76, p=.011).
+
+#Importer, et nommer, le fichier de donnees disponible sur Moodle (data_TD3)
+dataframeD <- read.table(file.choose(), header=T, sep=";", dec=",")
+
+#Tester les hypotheses suivantes puis proposer une phrase de conclusion pour chacune. 
+##Hypothese 1: Plus les participants sont ages, moins ils apprécient la tache. 
+cor.test(dataframeD$Age, dataframeD$Appreciation)
+##L'age des participants n'est pas significativement correle a leur appreciation de la tache. La relation entre l'age et l'appreciation est positive et d'intensite faible (r=.27, p=.355).
+##Hypothese 2: Le temps mis pour completer la tache est positivement correle au score obtenu a cette tache.
+cor.test(dataframeD$Temps, dataframeD$Score)
+##Le temps mis par les participants pour completer la tache n'est pas significativement correle a leur score a la tache. Aucune relation n'est observee entre ces variables (r=-.04, p=.890).
+
+#Representer graphiquement le score des participants en fonction de leur age
+plot(dataframeD$Age,dataframeD$Score)#solution1: d'abord la variable en abscisses, puis celle en ordonnees
+plot(dataframeD$Score~dataframeD$Age)#solution2: la variable en ordonnee en fonction de (~) la variable en abscisses
+
+#Ajouter la droite de regression lineaire au graphique
+ab <- lm(dataframeD$Score~dataframeD$Age)
+plot(dataframeD$Age,dataframeD$Score)+abline(ab)
+
+#Representer graphiquement la VD2 en fonction de la VD1 et ajouter la droite de regression lineaire au graphique
+ab2 <- lm(dataframeC$VD2~dataframeC$VD1)
+plot(dataframeC$VD1,dataframeC$VD2)+abline(ab2)
+
+#Calculer les coefficients de la droite de regression lineaire en utiliser les formules
+a <- cov(dataframeC$VD1, dataframeC$VD2)/var(dataframeC$VD1)
+b <- mean(dataframeC$VD2)-a*mean(dataframeC$VD1)
+#verifier que les resultats sont les memes que ceux donnes avec la fonction lm()
